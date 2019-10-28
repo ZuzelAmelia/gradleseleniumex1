@@ -1,4 +1,6 @@
 package implementations;
+
+
 import com.love2code.utilities.PropertyManager;
 import org.junit.Assert;
 import org.openqa.selenium.By;
@@ -8,6 +10,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
 
 public class StepImplementation {
 
@@ -21,10 +24,11 @@ public class StepImplementation {
     By altenUserName = By.name("userName");
     By altenPassword = By.name("password");
     By login = By.id("loginButton");
+    By editProfileButton=By.id("editProfile");
 
 
     //This method verifies that the response code of the url is 200, the website is accessible
-    public void testCodeHTTPResponse() throws IOException {
+    public void testCodeHTTPResponse() throws IOException, IOException {
         URL url = new URL(baseURL);
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
@@ -34,8 +38,8 @@ public class StepImplementation {
         Assert.assertTrue(realCode==expectedCode);
     }
 
-        // this method opens this url: http://172.21.0.93:8080/production/login.html
-        public  void loadAltenWebSite() {
+    // this method opens this url: http://172.21.0.93:8080/production/login.html
+    public  void loadAltenWebSite() {
         System.setProperty("webdriver.chrome.driver",chromeDriverUrl);
         // Create a new instance of the Chrome driver
         driver = new ChromeDriver();
@@ -46,30 +50,35 @@ public class StepImplementation {
     }
 
     //Fill up the login form and click the login buttton
-    public void setUserAndPassword() {
+    public void setUserAndPassword()  {
         driver.findElement(altenUserName).sendKeys(userName);
         driver.findElement(altenPassword).sendKeys(password);
         driver.findElement(login).click();
+        try {
+            Thread.sleep(5000);
+        }
+        catch(InterruptedException ie){
+
+        }
     }
 
-        // Verifies if the login field exists
+    // Verifies if the login field exists
     public void verifyLoginField() {
         Assert.assertTrue(!driver.findElements(login).isEmpty());
-        /*By loginButton = By.xpath("//button[@value='login']");
-        Assert.assertTrue(driver.findElement(loginButton).isDisplayed());
-        */
     }
 
     //This method verifies that we are in My Profile page
     public void verifyMyProfilePage(){
-        String urlExpected="";
+        String urlExpected="http://172.21.0.93:8080/production/profile.html";
+        System.out.println("The expected url is: "+urlExpected);
         String currentUrl=driver.getCurrentUrl();
+        System.out.println("THe current url is: "+currentUrl);
         Assert.assertEquals(urlExpected, currentUrl);
     }
 
     // This method verifies that button 'edit profile' is displayed
     public void verifyButtonEditProfile(){
-        By editProfileButton = By.xpath("//button[@value='edit profile']");
         Assert.assertTrue(driver.findElement(editProfileButton).isDisplayed());
     }
 }
+
